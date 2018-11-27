@@ -1,0 +1,117 @@
+//
+//  RecordView.swift
+//  Voice
+//
+//  Created by Tyoung on 2018/11/27.
+//  Copyright © 2018 Tyoung. All rights reserved.
+//
+
+import UIKit
+import AVFoundation
+
+class RecordView: UIView {
+    var songData: NSData?
+    weak var delegate: RecordViewProtocol?
+    
+    fileprivate var docmentFilePath: String?
+    fileprivate var recorder: AVAudioRecorder?
+    fileprivate var playTime: Int = 0
+    fileprivate var playTimer: Timer?
+    
+    lazy var voiceBtn: UIButton = {
+       let voiceBtn = UIButton()
+        voiceBtn.backgroundColor = UIColor.orange
+        voiceBtn.setTitle("Hold To Talk", for: .normal)
+        voiceBtn.setTitle("Release To Send", for: .highlighted)
+        voiceBtn.addTarget(self, action: #selector(beginRecordVoice(_:)), for: .touchDown)
+        voiceBtn.addTarget(self, action: #selector(endRecordVoice(_:)), for: .touchUpInside)
+        voiceBtn.addTarget(self, action: #selector(cancelRecordVoice(_:)), for: .touchUpOutside)
+        voiceBtn.addTarget(self, action: #selector(cancelRecordVoice(_:)), for: .touchCancel)
+        voiceBtn.addTarget(self, action: #selector(RemindDragExit(_:)), for: .touchDragExit)
+        voiceBtn.addTarget(self, action: #selector(RemindDragEnter(_:)), for: .touchDragEnter)
+        return voiceBtn
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.isUserInteractionEnabled = true
+        self.voiceBtn.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+        self.addSubview(self.voiceBtn)
+    }
+    @objc func beginRecordVoice(_ sender: UIButton){
+        playTime = 0
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
+        } catch let err{
+            print("设置类型失败:\(err.localizedDescription)")
+            return
+        }
+        //设置session动作
+        do {
+            try audioSession.setActive(true)
+        } catch let err {
+            print("初始化动作失败:\(err.localizedDescription)")
+            return
+        }
+        let recordSetting: [String : Any] = [AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.min.rawValue),AVEncoderBitRateKey:NSNumber(integerLiteral: 16),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatLinearPCM)),AVNumberOfChannelsKey:2,AVLinearPCMBitDepthKey:8]
+        let docments = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last
+        docmentFilePath = docments! + "/123" //设置文件地址
+        do {
+            let url = NSURL.fileURL(withPath: docmentFilePath!)
+            recorder = try AVAudioRecorder(url: url, settings: recordSetting)
+            recorder?.delegate = self
+            recorder!.prepareToRecord()
+            recorder?.isMeteringEnabled = true
+            recorder?.record()
+        } catch let err {
+            print("录音失败:\(err.localizedDescription)")
+        }
+        playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
+        
+    }
+    @objc func endRecordVoice(_ sender: UIButton?){
+        recorder?.stop()
+        playTimer?.invalidate()
+        playTimer = nil
+    }
+    @objc func cancelRecordVoice(_ sender: UIButton){
+        if (playTimer != nil) {
+            recorder?.stop()
+            recorder?.deleteRecording()
+            playTimer?.invalidate()
+            playTimer = nil
+        }
+        print("cancel")
+    }
+    @objc func RemindDragExit(_ sender: UIButton){
+        print("release to change")
+    }
+    @objc func RemindDragEnter(_ sender: UIButton){
+        print("Slide up to cancel")
+    }
+    @objc func countVoiceTime(){
+        playTime = playTime + 1
+        if playTime >= 60 {
+            endRecordVoice(nil)
+        }
+        print(playTime)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+extension RecordView: AVAudioRecorderDelegate{
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        let url = NSURL.fileURL(withPath: docmentFilePath!)
+        do{
+            let audioData = try  NSData(contentsOfFile: url.path, options: [])
+            delegate?.endConvertWithData(audioData)
+        } catch let err{
+            print("录音失败:\(err.localizedDescription)")
+        }
+    }
+}
+protocol RecordViewProtocol: NSObjectProtocol{
+    func endConvertWithData(_ data: NSData)
+}
