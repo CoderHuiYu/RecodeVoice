@@ -54,7 +54,9 @@ class RecordView: UIView {
             print("初始化动作失败:\(err.localizedDescription)")
             return
         }
+        //压缩
         let recordSetting: [String : Any] = [AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.max.rawValue),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatMPEG4AAC)),AVNumberOfChannelsKey:1,AVLinearPCMBitDepthKey:8,AVSampleRateKey:NSNumber(integerLiteral: 44100)]
+        //未压缩
 //        let recordSetting: [String : Any] = [AVEncoderBitRateKey:NSNumber(integerLiteral: 16),AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.max.rawValue),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatLinearPCM)),AVNumberOfChannelsKey:2,AVLinearPCMBitDepthKey:8]
         let docments = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last
         docmentFilePath = docments! + "/123.caf" //设置文件地址
