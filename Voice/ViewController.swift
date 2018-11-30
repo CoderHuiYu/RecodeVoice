@@ -17,9 +17,12 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
     lazy var playBtn: UIButton = {
         let playBtn = UIButton()
         playBtn.setTitle("play", for: .normal)
-        playBtn.frame = CGRect(x: 0, y: 230, width: UIScreen.main.bounds.size.width, height: 50)
+        playBtn.frame = CGRect(x: (UIScreen.main.bounds.size.width-60)/2, y: 230, width: 60, height: 60)
+        playBtn.layer.cornerRadius = 30
+        playBtn.layer.masksToBounds = true
         playBtn.addTarget(self, action: #selector(playBtnClick(_:)), for: .touchUpInside)
-        playBtn.backgroundColor = UIColor.black
+        playBtn.setImage(UIImage.init(named: "play_higlight"), for:UIControl.State.highlighted)
+        playBtn.setImage(UIImage.init(named: "play"), for:UIControl.State.normal)
         return playBtn
     }()
     lazy var recordView: RecordView = {
