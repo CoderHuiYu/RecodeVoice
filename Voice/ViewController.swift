@@ -25,6 +25,7 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
         playBtn.setImage(UIImage.init(named: "play"), for:UIControl.State.normal)
         return playBtn
     }()
+    
     lazy var recordView: ZLRecordButton = {
         let recordView = ZLRecordButton(frame: CGRect(x: 0, y: 530, width: UIScreen.main.bounds.size.width, height: 50))
         recordView.delegate = self
