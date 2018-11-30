@@ -12,7 +12,7 @@ import AVFoundation
 class ViewController: UIViewController ,AVAudioRecorderDelegate{
     
     fileprivate var player: AVAudioPlayer?
-    var songData: NSData?
+    var voiceData: NSData?
 
     lazy var playBtn: UIButton = {
         let playBtn = UIButton()
@@ -24,7 +24,6 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
     }()
     lazy var recordView: RecordView = {
         let recordView = RecordView(frame: CGRect(x: 0, y: 530, width: UIScreen.main.bounds.size.width, height: 50))
-        recordView.backgroundColor = UIColor.blue
         recordView.delegate = self
         return recordView
     }()
@@ -42,20 +41,20 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
             player = nil
         }
         do {
-            if songData == nil {
+            if voiceData == nil {
                 return
             }
-            player = try AVAudioPlayer.init(data: songData! as Data)
-            print("歌曲长度：\(player!.duration)")
+            player = try AVAudioPlayer.init(data: voiceData! as Data)
+            print("voiceData：\(player!.duration)")
             player!.play()
         } catch let err {
-            print("播放失败:\(err.localizedDescription)")
+            print("play fail:\(err.localizedDescription)")
         }
     }
 }
 extension ViewController: RecordViewProtocol{
     func endConvertWithData(_ data: NSData) {
-        songData = data
+        voiceData = data
     }
     
 }
