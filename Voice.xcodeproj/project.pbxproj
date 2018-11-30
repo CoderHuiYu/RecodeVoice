@@ -60,6 +60,16 @@
 			path = Shimmer;
 			sourceTree = "<group>";
 		};
+		0CEDD08121B1456400F9050E /* ZLRecord */ = {
+			isa = PBXGroup;
+			children = (
+				0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */,
+				0CEDD07421B122AA00F9050E /* ZLRecordView.swift */,
+				0CEDD07621B1317100F9050E /* ZLSlideView.swift */,
+			);
+			path = ZLRecord;
+			sourceTree = "<group>";
+		};
 		FED6DFE721AD22C300F8943F = {
 			isa = PBXGroup;
 			children = (
@@ -79,12 +89,10 @@
 		FED6DFF221AD22C300F8943F /* Voice */ = {
 			isa = PBXGroup;
 			children = (
+				0CEDD08121B1456400F9050E /* ZLRecord */,
 				0CEDD07821B144B300F9050E /* Shimmer */,
 				FED6DFF321AD22C300F8943F /* AppDelegate.swift */,
 				FED6DFF521AD22C300F8943F /* ViewController.swift */,
-				0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */,
-				0CEDD07421B122AA00F9050E /* ZLRecordView.swift */,
-				0CEDD07621B1317100F9050E /* ZLSlideView.swift */,
 				FED6DFF721AD22C300F8943F /* Main.storyboard */,
 				FED6DFFA21AD22C400F8943F /* Assets.xcassets */,
 				FED6DFFC21AD22C400F8943F /* LaunchScreen.storyboard */,
