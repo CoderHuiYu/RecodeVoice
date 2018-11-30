@@ -1,44 +1,46 @@
 //
-//  RecordView.swift
+//  ZLRecordButton.swift
 //  Voice
 //
-//  Created by Tyoung on 2018/11/27.
-//  Copyright © 2018 Tyoung. All rights reserved.
+//  Created by 余辉 on 2018/11/30.
+//  Copyright © 2018年 Tyoung. All rights reserved.
 //
 
 import UIKit
 import AVFoundation
+protocol ZLRecordButtonProtocol: NSObjectProtocol{
+    //return the recode voice data
+    func recordFinishRecordVoice(didFinishRecode voiceData: NSData)
+}
+class ZLRecordButton: UIButton {
 
-class RecordView: UIView {
-    var songData: NSData?
-    weak var delegate: RecordViewProtocol?
+    var voiceData: NSData?
+    weak var delegate: ZLRecordButtonProtocol?
     
     fileprivate var docmentFilePath: String?
     fileprivate var recorder: AVAudioRecorder?
     fileprivate var playTime: Int = 0
     fileprivate var playTimer: Timer?
     
-    lazy var voiceBtn: UIButton = {
-       let voiceBtn = UIButton()
-        voiceBtn.backgroundColor = UIColor.orange
-        voiceBtn.setTitle("Hold To Talk", for: .normal)
-        voiceBtn.setTitle("Release To Send", for: .highlighted)
-        voiceBtn.addTarget(self, action: #selector(beginRecordVoice(_:)), for: .touchDown)
-        voiceBtn.addTarget(self, action: #selector(endRecordVoice(_:)), for: .touchUpInside)
-        voiceBtn.addTarget(self, action: #selector(cancelRecordVoice(_:)), for: .touchUpOutside)
-        voiceBtn.addTarget(self, action: #selector(cancelRecordVoice(_:)), for: .touchCancel)
-        voiceBtn.addTarget(self, action: #selector(RemindDragExit(_:)), for: .touchDragExit)
-        voiceBtn.addTarget(self, action: #selector(RemindDragEnter(_:)), for: .touchDragEnter)
-        return voiceBtn
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.isUserInteractionEnabled = true
-        self.voiceBtn.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-        self.addSubview(self.voiceBtn)
+        self.backgroundColor = UIColor.orange
+        self.setTitle("Hold To Talk", for: .normal)
+        self.setTitle("Release To Send", for: .highlighted)
+        self.addTarget(self, action: #selector(recordBeginRecordVoice(_:)), for: .touchDown)
+        self.addTarget(self, action: #selector(recordEndRecordVoice(_:)), for: .touchUpInside)
+        self.addTarget(self, action: #selector(recordCancelRecordVoice(_:)), for: .touchUpOutside)
+        self.addTarget(self, action: #selector(recordCancelRecordVoice(_:)), for: .touchCancel)
+        self.addTarget(self, action: #selector(recordRemindDragExit(_:)), for: .touchDragExit)
+        self.addTarget(self, action: #selector(recordRemindDragEnter(_:)), for: .touchDragEnter)
     }
-    @objc func beginRecordVoice(_ sender: UIButton){
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //begin Record Voice
+    @objc func recordBeginRecordVoice(_ sender: UIButton){
         playTime = 0
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -54,9 +56,10 @@ class RecordView: UIView {
             print("inital fail:\(err.localizedDescription)")
             return
         }
+        
         //Compressed audio
         let recordSetting: [String : Any] = [AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.max.rawValue),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatMPEG4AAC)),AVNumberOfChannelsKey:1,AVLinearPCMBitDepthKey:8,AVSampleRateKey:NSNumber(integerLiteral: 44100)]
-     
+        
         let docments = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last
         docmentFilePath = docments! + "/123.caf" //Set storage address
         do {
@@ -70,14 +73,17 @@ class RecordView: UIView {
             print("record fail:\(err.localizedDescription)")
         }
         playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
-        
     }
-    @objc func endRecordVoice(_ sender: UIButton?){
+    
+    //end Record Voice
+    @objc func recordEndRecordVoice(_ sender: UIButton?){
         recorder?.stop()
         playTimer?.invalidate()
         playTimer = nil
     }
-    @objc func cancelRecordVoice(_ sender: UIButton){
+    
+    //cancle Record Voice
+    @objc func recordCancelRecordVoice(_ sender: UIButton){
         if (playTimer != nil) {
             recorder?.stop()
             recorder?.deleteRecording()
@@ -86,34 +92,35 @@ class RecordView: UIView {
         }
         print("cancel")
     }
-    @objc func RemindDragExit(_ sender: UIButton){
+    
+    //exit
+    @objc func recordRemindDragExit(_ sender: UIButton){
         print("release to change")
     }
-    @objc func RemindDragEnter(_ sender: UIButton){
+    
+    //Slide up to cancel
+    @objc func recordRemindDragEnter(_ sender: UIButton){
         print("Slide up to cancel")
     }
-    @objc func countVoiceTime(){
+    
+    @objc private func countVoiceTime(){
         playTime = playTime + 1
         if playTime >= 60 {
-            endRecordVoice(nil)
+            recordEndRecordVoice (nil)
         }
         print(playTime)
     }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
 }
-extension RecordView: AVAudioRecorderDelegate{
+
+extension ZLRecordButton: AVAudioRecorderDelegate{
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         let url = NSURL.fileURL(withPath: docmentFilePath!)
         do{
             let audioData = try  NSData(contentsOfFile: url.path, options: [])
-            delegate?.endConvertWithData(audioData)
+            delegate?.recordFinishRecordVoice(didFinishRecode: audioData)
         } catch let err{
             print("record fail:\(err.localizedDescription)")
         }
     }
-}
-protocol RecordViewProtocol: NSObjectProtocol{
-    func endConvertWithData(_ data: NSData)
 }
