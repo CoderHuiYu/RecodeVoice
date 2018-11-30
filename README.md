@@ -3,11 +3,10 @@
 
 ### Swift
 
-1. Ensure your view  controller conforms to the `RecordViewProtocol` protocol:
+1. Ensure your view  controller conforms to the `ZLRecordButtonProtocol` protocol:
 ```swift
-class  YourViewController: RecordViewProtocol{
-    func endConvertWithData(_ data: NSData) {
-        voiceData = data
+class  YourViewController: ZLRecordButtonProtocol{
+   func recordFinishRecordVoice(didFinishRecode voiceData: NSData) {
         // YourViewController code here
     }
 }
