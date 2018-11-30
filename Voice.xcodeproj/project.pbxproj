@@ -8,7 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0CEDD06C21B106E500F9050E /* ZLRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */; };
-		0CEDD07521B122AA00F9050E /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07421B122AA00F9050E /* RecordView.swift */; };
+		0CEDD07521B122AA00F9050E /* ZLRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07421B122AA00F9050E /* ZLRecordView.swift */; };
+		0CEDD07721B1317100F9050E /* ZLSlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07621B1317100F9050E /* ZLSlideView.swift */; };
+		0CEDD07D21B144B300F9050E /* ShimmeringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07921B144B300F9050E /* ShimmeringView.swift */; };
+		0CEDD07E21B144B300F9050E /* ShimmeringLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07A21B144B300F9050E /* ShimmeringLayer.swift */; };
+		0CEDD07F21B144B300F9050E /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07B21B144B300F9050E /* Shimmer.swift */; };
+		0CEDD08021B144B300F9050E /* ShimmeringMaskLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07C21B144B300F9050E /* ShimmeringMaskLayer.swift */; };
 		FED6DFF421AD22C300F8943F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6DFF321AD22C300F8943F /* AppDelegate.swift */; };
 		FED6DFF621AD22C300F8943F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6DFF521AD22C300F8943F /* ViewController.swift */; };
 		FED6DFF921AD22C300F8943F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED6DFF721AD22C300F8943F /* Main.storyboard */; };
@@ -18,7 +23,12 @@
 
 /* Begin PBXFileReference section */
 		0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLRecordButton.swift; sourceTree = "<group>"; };
-		0CEDD07421B122AA00F9050E /* RecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
+		0CEDD07421B122AA00F9050E /* ZLRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLRecordView.swift; sourceTree = "<group>"; };
+		0CEDD07621B1317100F9050E /* ZLSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLSlideView.swift; sourceTree = "<group>"; };
+		0CEDD07921B144B300F9050E /* ShimmeringView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmeringView.swift; sourceTree = "<group>"; };
+		0CEDD07A21B144B300F9050E /* ShimmeringLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmeringLayer.swift; sourceTree = "<group>"; };
+		0CEDD07B21B144B300F9050E /* Shimmer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
+		0CEDD07C21B144B300F9050E /* ShimmeringMaskLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmeringMaskLayer.swift; sourceTree = "<group>"; };
 		FED6DFF021AD22C300F8943F /* Voice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FED6DFF321AD22C300F8943F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FED6DFF521AD22C300F8943F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -39,6 +49,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0CEDD07821B144B300F9050E /* Shimmer */ = {
+			isa = PBXGroup;
+			children = (
+				0CEDD07921B144B300F9050E /* ShimmeringView.swift */,
+				0CEDD07A21B144B300F9050E /* ShimmeringLayer.swift */,
+				0CEDD07B21B144B300F9050E /* Shimmer.swift */,
+				0CEDD07C21B144B300F9050E /* ShimmeringMaskLayer.swift */,
+			);
+			path = Shimmer;
+			sourceTree = "<group>";
+		};
 		FED6DFE721AD22C300F8943F = {
 			isa = PBXGroup;
 			children = (
@@ -58,10 +79,12 @@
 		FED6DFF221AD22C300F8943F /* Voice */ = {
 			isa = PBXGroup;
 			children = (
+				0CEDD07821B144B300F9050E /* Shimmer */,
 				FED6DFF321AD22C300F8943F /* AppDelegate.swift */,
 				FED6DFF521AD22C300F8943F /* ViewController.swift */,
 				0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */,
-				0CEDD07421B122AA00F9050E /* RecordView.swift */,
+				0CEDD07421B122AA00F9050E /* ZLRecordView.swift */,
+				0CEDD07621B1317100F9050E /* ZLSlideView.swift */,
 				FED6DFF721AD22C300F8943F /* Main.storyboard */,
 				FED6DFFA21AD22C400F8943F /* Assets.xcassets */,
 				FED6DFFC21AD22C400F8943F /* LaunchScreen.storyboard */,
@@ -142,9 +165,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				FED6DFF621AD22C300F8943F /* ViewController.swift in Sources */,
-				0CEDD07521B122AA00F9050E /* RecordView.swift in Sources */,
+				0CEDD07E21B144B300F9050E /* ShimmeringLayer.swift in Sources */,
+				0CEDD07D21B144B300F9050E /* ShimmeringView.swift in Sources */,
+				0CEDD07521B122AA00F9050E /* ZLRecordView.swift in Sources */,
 				0CEDD06C21B106E500F9050E /* ZLRecordButton.swift in Sources */,
+				0CEDD08021B144B300F9050E /* ShimmeringMaskLayer.swift in Sources */,
+				0CEDD07F21B144B300F9050E /* Shimmer.swift in Sources */,
 				FED6DFF421AD22C300F8943F /* AppDelegate.swift in Sources */,
+				0CEDD07721B1317100F9050E /* ZLSlideView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

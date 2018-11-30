@@ -25,8 +25,7 @@ class ZLRecordButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.orange
-        self.setTitle("Hold To Talk", for: .normal)
-        self.setTitle("Release To Send", for: .highlighted)
+        self.setImage(UIImage.init(named: "ButtonMic7"), for:UIControl.State.normal)
         self.addTarget(self, action: #selector(recordBeginRecordVoice(_:)), for: .touchDown)
         self.addTarget(self, action: #selector(recordEndRecordVoice(_:)), for: .touchUpInside)
         self.addTarget(self, action: #selector(recordCancelRecordVoice(_:)), for: .touchUpOutside)
