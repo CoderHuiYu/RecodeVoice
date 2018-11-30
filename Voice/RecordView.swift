@@ -44,17 +44,17 @@ class RecordView: UIView {
         do {
             try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
         } catch let err{
-            print("设置类型失败:\(err.localizedDescription)")
+            print("set type fail:\(err.localizedDescription)")
             return
         }
-        //设置session动作
+        //set session
         do {
             try audioSession.setActive(true)
         } catch let err {
-            print("初始化动作失败:\(err.localizedDescription)")
+            print("inital fail:\(err.localizedDescription)")
             return
         }
-        //压缩
+        //Compressed audio
         let recordSetting: [String : Any] = [AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.max.rawValue),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatMPEG4AAC)),AVNumberOfChannelsKey:1,AVLinearPCMBitDepthKey:8,AVSampleRateKey:NSNumber(integerLiteral: 44100)]
         //未压缩
 //        let recordSetting: [String : Any] = [AVEncoderBitRateKey:NSNumber(integerLiteral: 16),AVEncoderAudioQualityKey:NSNumber(integerLiteral: AVAudioQuality.max.rawValue),AVFormatIDKey:NSNumber(integerLiteral: Int(kAudioFormatLinearPCM)),AVNumberOfChannelsKey:2,AVLinearPCMBitDepthKey:8]
@@ -68,7 +68,7 @@ class RecordView: UIView {
             recorder?.isMeteringEnabled = true
             recorder?.record()
         } catch let err {
-            print("录音失败:\(err.localizedDescription)")
+            print("record fail:\(err.localizedDescription)")
         }
         playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
         
@@ -111,7 +111,7 @@ extension RecordView: AVAudioRecorderDelegate{
             let audioData = try  NSData(contentsOfFile: url.path, options: [])
             delegate?.endConvertWithData(audioData)
         } catch let err{
-            print("录音失败:\(err.localizedDescription)")
+            print("record fail:\(err.localizedDescription)")
         }
     }
 }
