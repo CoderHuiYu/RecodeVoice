@@ -9,10 +9,22 @@
 import UIKit
 
 class ZLSlideView: UIView {
+    
+    lazy var shimmerView : ShimmeringView = {
+        let shimmerView = ShimmeringView(frame: CGRect(x: 100, y: 0, width: self.frame.size.width-100-33, height: self.frame.size.height))
+        shimmerView.contentView = self.showLabel
+        shimmerView.isShimmering = true
+        shimmerView.shimmerSpeed = 300
+        shimmerView.shimmerDirection = .right
+//        shimmerView.shimmerPauseDuration = 0.1
+//        shimmerView.shimmerHighlightLength = 0.29;
 
+        return shimmerView
+    }()
+    
     lazy var showLabel : UILabel = {
         let label = UILabel.init(frame: self.bounds)
-        label.text = "swipe to delete"
+        label.text = "滑动删除"
         label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = NSTextAlignment.center
         label.backgroundColor = UIColor.clear
@@ -22,7 +34,7 @@ class ZLSlideView: UIView {
     lazy var arrowImageView : UIImageView = {
         let imgView = UIImageView.init(image: UIImage.init(named: "SlideArrow"))
         var frame = imgView.frame
-        frame.origin.x = self.frame.size.width/2.0 + 65
+        frame.origin.x = self.frame.size.width/2.0 + 35
         frame.origin.y = (self.frame.height - frame.height)/2
         imgView.frame = frame
         return imgView

@@ -11,6 +11,13 @@ import AVFoundation
 protocol ZLRecordButtonProtocol: NSObjectProtocol{
     //return the recode voice data
     func recordFinishRecordVoice(didFinishRecode voiceData: NSData)
+    //start
+    func recordStartRecordVoice()
+    //stop
+    func recordStopRecordVoice()
+    //recoding
+    func recordIsRecordingVoice(_ recordTime:Int)
+    
 }
 class ZLRecordButton: UIButton {
 
@@ -40,6 +47,10 @@ class ZLRecordButton: UIButton {
     
     //begin Record Voice
     @objc func recordBeginRecordVoice(_ sender: UIButton){
+        guard delegate != nil else {
+            return
+        }
+        delegate?.recordStartRecordVoice()
         playTime = 0
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -77,12 +88,14 @@ class ZLRecordButton: UIButton {
     //end Record Voice
     @objc func recordEndRecordVoice(_ sender: UIButton?){
         recorder?.stop()
+        delegate?.recordStopRecordVoice()
         playTimer?.invalidate()
         playTimer = nil
     }
     
     //cancle Record Voice
     @objc func recordCancelRecordVoice(_ sender: UIButton){
+        delegate?.recordStopRecordVoice()
         if (playTimer != nil) {
             recorder?.stop()
             recorder?.deleteRecording()
@@ -104,6 +117,7 @@ class ZLRecordButton: UIButton {
     
     @objc private func countVoiceTime(){
         playTime = playTime + 1
+        self.delegate?.recordIsRecordingVoice(playTime)
         if playTime >= 60 {
             recordEndRecordVoice (nil)
         }
