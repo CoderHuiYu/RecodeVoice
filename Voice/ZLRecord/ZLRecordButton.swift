@@ -21,7 +21,7 @@ protocol ZLRecordButtonProtocol: NSObjectProtocol{
     //is recoding  recordTime:the duration of record
     func recordIsRecordingVoice(_ recordTime:Int)
     
-    //cancle record
+    //record may cancel
     func recordMayCancelRecordVoice(sender _: UIButton,event _:UIEvent)
     
 }
@@ -34,6 +34,7 @@ class ZLRecordButton: UIButton {
     fileprivate var recorder: AVAudioRecorder?
     fileprivate var playTime: Int = 0
     fileprivate var playTimer: Timer?
+    var isCanceling :Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,10 +42,6 @@ class ZLRecordButton: UIButton {
         self.backgroundColor = UIColor.orange
         self.setImage(UIImage.init(named: "ButtonMic7"), for:UIControl.State.normal)
         recordBtnAddTarget()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func recordBtnAddTarget() {
@@ -55,11 +52,19 @@ class ZLRecordButton: UIButton {
         self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchUpInside)
         self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchCancel)
         self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchUpOutside)
+        
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    deinit {
+        print("deinit")
+    }
+   
     func cancledRecord() {
-        print("recordCanceled")
+        print("~~~~~~~recordCanceled～～")
         if (playTimer != nil) {
             recorder?.stop()
             recorder?.deleteRecording()
@@ -70,6 +75,7 @@ class ZLRecordButton: UIButton {
     
     func didBeginRecord() {
         print("didBeginRecord")
+        isCanceling = false 
         playTime = 0
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -106,25 +112,26 @@ class ZLRecordButton: UIButton {
             playTimer = Timer.init(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
         }
         RunLoop.main.add(playTimer!, forMode: RunLoop.Mode.default)
-//        playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
     }
     
-      //=================================================================
-      //=================================================================
       //=================================================================
     
     //begin Record Voice
     @objc func recordBeginRecordVoice(_ sender: UIButton,_ event:UIEvent){
-         print("recordBegin")
+        print("----------recordBegin")
         guard delegate != nil else {
             return
         }
+       
         delegate?.recordStartRecordVoice(sender: sender, event: event)
     }
   
     //finish Record Voice
     @objc func recordFinishRecordVoice(_ sender: UIButton?){
-        print("recordFinish-----1")
+        guard isCanceling  == false else {
+            return
+        }
+        print("~~~~~~~recordFinish-----1")
         recorder?.stop()
         delegate?.recordFinishRecordVoice()
         playTimer?.invalidate()
@@ -145,7 +152,7 @@ class ZLRecordButton: UIButton {
         if playTime >= 60 {
             recordFinishRecordVoice(self)
         }
-        print(playTime)
+        print("~~~~~~~\(playTime)")
     }
     
 }

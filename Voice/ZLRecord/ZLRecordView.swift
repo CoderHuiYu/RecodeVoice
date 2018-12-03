@@ -18,9 +18,12 @@ let kFloatGarbageAnimationTime = 0.3
 let kFloatGarbageBeginY  = 45.0
 let kFloatCancelRecordingOffsetX  : CGFloat = 100.0
 
-protocol ZLRecordViewProtocol: NSObjectProtocol{
+@objc protocol ZLRecordViewProtocol: NSObjectProtocol{
     //return the recode voice data
     func zlRecordFinishRecordVoice(didFinishRecode voiceData: NSData)
+    
+    // record canceled
+    @objc optional func zlRecordCanceledRecordVoice()
 }
 
 class ZLRecordView: UIView {
@@ -31,16 +34,23 @@ class ZLRecordView: UIView {
     
     var trackTouchPoint : CGPoint?
     var firstTouchPoint : CGPoint?
-    var isCanStartCancel : Bool = false  //is or not can start cancel
     var isCanceling : Bool = false      //is canceling
     
     var timeCount : Int = 0
-    
     var _voiceBtn : ZLRecordButton?
     var _shimmerView : ShimmeringView?
     var _recordBtn : UIButton?
     var _garbageView : ZLGarbageView?
     var _timeLabel : UILabel?
+    var _placeholdLabel : UILabel?
+    
+    var placeholdLabel : UILabel {
+        if _placeholdLabel == nil {
+           _placeholdLabel = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: 40, height: self.frame.height))
+            _placeholdLabel!.backgroundColor = self.backgroundColor
+        }
+        return _placeholdLabel!
+    }
     
     
     var shimmerView :ShimmeringView {
@@ -92,6 +102,7 @@ class ZLRecordView: UIView {
             _timeLabel = UILabel.init(frame: CGRect.init(x: 40, y: 0, width: 60, height: self.frame.height))
             _timeLabel!.textColor = UIColor.black
             _timeLabel!.isHidden = true
+            _timeLabel?.backgroundColor = self.backgroundColor
             _timeLabel!.text = "0:00"
             _timeLabel!.font = UIFont.systemFont(ofSize: 18)
         }
@@ -177,24 +188,23 @@ class ZLRecordView: UIView {
             
         }) { (finish) in
             
-//            if finish {
-                self.showGarbage()
-                UIView.animate(withDuration: kFloatRecordImageRotateTime, delay: 0.0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                    let transFormNew = CGAffineTransform.init(rotationAngle: CGFloat(-1 * Double.pi))
-                    self.recordBtn.transform  = transFormNew
-                    
+            self.showGarbage()
+            UIView.animate(withDuration: kFloatRecordImageRotateTime, delay: 0.0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                let transFormNew = CGAffineTransform.init(rotationAngle: CGFloat(-1 * Double.pi))
+                self.recordBtn.transform  = transFormNew
+                
+            }) { (finish) in
+                
+                UIView.animate(withDuration: kFloatRecordImageDownTime, delay: 0.0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                    self.recordBtn.frame = orgFrame
+                    self.recordBtn.alpha = 0.1
                 }) { (finish) in
-                    
-                    UIView.animate(withDuration: kFloatRecordImageDownTime, delay: 0.0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                        self.recordBtn.frame = orgFrame
-                        self.recordBtn.alpha = 0.1
-                    }) { (finish) in
-                        self.recordBtn.isHidden = true
-                        self.recordBtn.transform = CGAffineTransform.identity
-                        self.dismissGarbage()
-                    }
+                    self.recordBtn.isHidden = true
+                    self.recordBtn.transform = CGAffineTransform.identity
+                    self.dismissGarbage()
+                    self.timeLabel.isHidden = true
                 }
-//            }
+            }
         }
     }
     
@@ -217,30 +227,37 @@ class ZLRecordView: UIView {
     
     //sure will cancle
     func cancled() {
-        timeCount = 0
+        
+        //
+        self.timeCount = 0
         self.shimmerView.isHidden = true
         self.recordBtn.layer.removeAllAnimations()
-        self.timeLabel.isHidden = true
-        //
         self.garbageView.isHidden = false
         
         //notict voiceButton to stop and delete record
         voiceBtn.cancledRecord()
         
         //show animation
-//        showGarbage()
         showRecordButtonAnimation()
-    }
-    
-    //when beign record : addSubview
-    func addView()  {
-        addSubview(shimmerView)
-        addSubview(recordBtn)
-        addSubview(garbageView)
+        
+        //notice delegate
+       
+        guard let delegate = delegate else {
+            return
+        }
+        if let res = delegate.zlRecordCanceledRecordVoice {
+            res()
+        }
     }
     
     //reset View contains:frame and layer animation
     func endRecord()  {
+        
+        if _placeholdLabel == nil {
+            placeholdLabel.removeFromSuperview()
+            _placeholdLabel = nil
+        }
+        
         if _garbageView != nil {
              garbageView.removeFromSuperview()
             _garbageView = nil
@@ -272,10 +289,12 @@ extension ZLRecordView : ZLRecordButtonProtocol{
     
     // start record
     func recordStartRecordVoice(sender senderA: UIButton, event eventA: UIEvent) {
-        //0.addSubview
-        addView()
-        
-        //1.hide the garbageView
+        //0.addSubview and hide garbageView
+        addSubview(shimmerView)
+        addSubview(placeholdLabel)
+        addSubview(recordBtn)
+       
+        addSubview(garbageView)
         self.garbageView.isHidden = true
         
         //2.get the trackPoint
@@ -283,12 +302,15 @@ extension ZLRecordView : ZLRecordButtonProtocol{
         trackTouchPoint = touch.location(in: self)
         firstTouchPoint = trackTouchPoint;
         isCanceling = false;
-        
+        voiceBtn.isCanceling = false
         //3.start execut the animation
         showSliderView()
       
         //4.delay
-        perform(#selector(prepareForRecord), with: nil, afterDelay: 1)
+        voiceBtn.didBeginRecord()
+        addSubview(timeLabel)
+        showRecordImageViewGradient()
+//        perform(#selector(prepareForRecord), with: nil, afterDelay: 1)
     }
     
     @objc func prepareForRecord()  {
@@ -297,14 +319,9 @@ extension ZLRecordView : ZLRecordButtonProtocol{
         showRecordImageViewGradient()
     }
     
-    
     // is recording
     func recordIsRecordingVoice(_ recordTime: Int) {
         timeCount = recordTime
-        //录制一秒后开始滑动删除
-        if recordTime >= 1 {
-            isCanStartCancel = true
-        }
         
         if recordTime < 10 {
             self.timeLabel.text = "0:0" + "\(recordTime)"
@@ -315,9 +332,10 @@ extension ZLRecordView : ZLRecordButtonProtocol{
     
     // recordMayCancel
     func recordMayCancelRecordVoice(sender senderA: UIButton, event eventA: UIEvent) {
-        guard isCanStartCancel == true else {
-            return
-        }
+//        guard timeCount >= 1 else {
+//            return
+//        }
+        
         let touch = eventA.touches(for: senderA)?.first
         let curPoint = touch?.location(in: self)
         guard curPoint != nil else {
@@ -330,6 +348,7 @@ extension ZLRecordView : ZLRecordButtonProtocol{
         trackTouchPoint = curPoint
         if (firstTouchPoint!.x - trackTouchPoint!.x) > kFloatCancelRecordingOffsetX {
             isCanceling = true
+            voiceBtn.isCanceling = true
             senderA.cancelTracking(with: eventA)
             senderA.removeTarget(nil, action: nil, for: UIControl.Event.allEvents)
             self.cancled()

@@ -16,7 +16,8 @@ class ZLSlideView: UIView {
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.init(red: 20/255.0, green: 20/255.0, blue: 20/255.0, alpha: 1)
         label.textAlignment = NSTextAlignment.center
-        label.backgroundColor = UIColor.clear
+//        label.backgroundColor = UIColor.init(displayP3Red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1)
+       
         return label
     }()
     
