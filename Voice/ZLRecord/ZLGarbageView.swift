@@ -2,8 +2,8 @@
 //  ZLGarbageView.swift
 //  Voice
 //
-//  Created by 余辉 on 2018/11/30.
-//  Copyright © 2018年 Tyoung. All rights reserved.
+//  Created by Jeffery on 2018/11/30.
+//  Copyright © 2018年 Jeffery. All rights reserved.
 //
 
 import UIKit

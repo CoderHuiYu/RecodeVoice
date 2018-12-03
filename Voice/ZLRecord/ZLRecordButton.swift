@@ -2,8 +2,8 @@
 //  ZLRecordButton.swift
 //  Voice
 //
-//  Created by 余辉 on 2018/11/30.
-//  Copyright © 2018年 Tyoung. All rights reserved.
+//  Created by Tyoung on 2018/11/30.
+//  Copyright © 2018年 Jeffery. All rights reserved.
 //
 
 import UIKit
@@ -11,12 +11,18 @@ import AVFoundation
 protocol ZLRecordButtonProtocol: NSObjectProtocol{
     //return the recode voice data
     func recordFinishRecordVoice(didFinishRecode voiceData: NSData)
-    //start
-    func recordStartRecordVoice()
-    //stop
-    func recordStopRecordVoice()
-    //recoding
+    
+    //start record
+    func recordStartRecordVoice(sender senderA: UIButton,event eventA:UIEvent)
+    
+    //finish record
+    func recordFinishRecordVoice()
+    
+    //is recoding  recordTime:the duration of record
     func recordIsRecordingVoice(_ recordTime:Int)
+    
+    //cancle record
+    func recordMayCancelRecordVoice(sender _: UIButton,event _:UIEvent)
     
 }
 class ZLRecordButton: UIButton {
@@ -31,26 +37,39 @@ class ZLRecordButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         self.backgroundColor = UIColor.orange
         self.setImage(UIImage.init(named: "ButtonMic7"), for:UIControl.State.normal)
-        self.addTarget(self, action: #selector(recordBeginRecordVoice(_:)), for: .touchDown)
-        self.addTarget(self, action: #selector(recordEndRecordVoice(_:)), for: .touchUpInside)
-        self.addTarget(self, action: #selector(recordCancelRecordVoice(_:)), for: .touchUpOutside)
-        self.addTarget(self, action: #selector(recordCancelRecordVoice(_:)), for: .touchCancel)
-        self.addTarget(self, action: #selector(recordRemindDragExit(_:)), for: .touchDragExit)
-        self.addTarget(self, action: #selector(recordRemindDragEnter(_:)), for: .touchDragEnter)
+        recordBtnAddTarget()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //begin Record Voice
-    @objc func recordBeginRecordVoice(_ sender: UIButton){
-        guard delegate != nil else {
-            return
+    func recordBtnAddTarget() {
+        self.addTarget(self, action: #selector(recordBeginRecordVoice(_:_:)), for: .touchDown)
+        self.addTarget(self, action: #selector(recordMayCancelRecordVoice(sender:event:)), for: .touchDragInside)
+        self.addTarget(self, action: #selector(recordMayCancelRecordVoice(sender:event:)), for: .touchDragOutside)
+        
+        self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchUpInside)
+        self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchCancel)
+        self.addTarget(self, action: #selector(recordFinishRecordVoice(_:)), for: .touchUpOutside)
+    }
+    
+    
+    func cancledRecord() {
+        print("recordCanceled")
+        if (playTimer != nil) {
+            recorder?.stop()
+            recorder?.deleteRecording()
+            playTimer?.invalidate()
+            playTimer = nil
         }
-        delegate?.recordStartRecordVoice()
+    }
+    
+    func didBeginRecord() {
+        print("didBeginRecord")
         playTime = 0
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -82,44 +101,49 @@ class ZLRecordButton: UIButton {
         } catch let err {
             print("record fail:\(err.localizedDescription)")
         }
-        playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
+       
+        if playTimer == nil {
+            playTimer = Timer.init(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
+        }
+        RunLoop.main.add(playTimer!, forMode: RunLoop.Mode.default)
+//        playTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countVoiceTime), userInfo: nil, repeats: true)
     }
     
-    //end Record Voice
-    @objc func recordEndRecordVoice(_ sender: UIButton?){
+      //=================================================================
+      //=================================================================
+      //=================================================================
+    
+    //begin Record Voice
+    @objc func recordBeginRecordVoice(_ sender: UIButton,_ event:UIEvent){
+         print("recordBegin")
+        guard delegate != nil else {
+            return
+        }
+        delegate?.recordStartRecordVoice(sender: sender, event: event)
+    }
+  
+    //finish Record Voice
+    @objc func recordFinishRecordVoice(_ sender: UIButton?){
+        print("recordFinish-----1")
         recorder?.stop()
-        delegate?.recordStopRecordVoice()
+        delegate?.recordFinishRecordVoice()
         playTimer?.invalidate()
         playTimer = nil
     }
     
     //cancle Record Voice
-    @objc func recordCancelRecordVoice(_ sender: UIButton){
-        delegate?.recordStopRecordVoice()
-        if (playTimer != nil) {
-            recorder?.stop()
-            recorder?.deleteRecording()
-            playTimer?.invalidate()
-            playTimer = nil
-        }
-        print("cancel")
+    @objc func recordMayCancelRecordVoice(sender senderBtn: UIButton,event eventBtn:UIEvent){
+        print("recordMayCancel")
+      
+        delegate?.recordMayCancelRecordVoice(sender: senderBtn, event: eventBtn)
+        
     }
-    
-    //exit
-    @objc func recordRemindDragExit(_ sender: UIButton){
-        print("release to change")
-    }
-    
-    //Slide up to cancel
-    @objc func recordRemindDragEnter(_ sender: UIButton){
-        print("Slide up to cancel")
-    }
-    
+   
     @objc private func countVoiceTime(){
         playTime = playTime + 1
         self.delegate?.recordIsRecordingVoice(playTime)
         if playTime >= 60 {
-            recordEndRecordVoice (nil)
+            recordFinishRecordVoice(self)
         }
         print(playTime)
     }
