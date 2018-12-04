@@ -19,11 +19,6 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
         return l
     }()
     
-    lazy var raderView : ZLRaderView = {
-        let l = ZLRaderView.init(frame: CGRect.init(x: 200, y: 200, width: 50, height: 50))
-        return l
-        
-    }()
     
     lazy var playBtn: UIButton = {
         let playBtn = UIButton()
@@ -49,7 +44,6 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
         view.addSubview(playBtn)
         view.addSubview(recordView)
 //        view.addSubview(lockView)
-        view.addSubview(raderView)
     }
     
     @objc func playBtnClick(_ sender: UIButton?){
