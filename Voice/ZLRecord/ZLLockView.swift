@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+let kBoundsAnimationDuration : CFTimeInterval = 0.4
 class ZLLockView: UIView {
    
     lazy var lockAnimationView : ZLLockAnimationView = {
@@ -28,9 +28,9 @@ class ZLLockView: UIView {
     
     func addBoundsAnimation() {
         let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnim.fromValue = 0.8
+        scaleAnim.fromValue = 1
         scaleAnim.toValue = 2
-        scaleAnim.duration = 0.5
+        scaleAnim.duration = kBoundsAnimationDuration
         scaleAnim.autoreverses = true
         scaleAnim.repeatCount = Float.infinity
         self.layer.add(scaleAnim, forKey: "scaleAnim")

@@ -19,6 +19,7 @@ let kFloatGarbageBeginY  = 45.0
 let kFloatCancelRecordingOffsetX  : CGFloat = 100.0
 let kFloatLockViewHeight : CGFloat  = 120.0
 let kFloatLockViewWidth : CGFloat  = 40.0
+
 @objc protocol ZLRecordViewProtocol: NSObjectProtocol{
     //return the recode voice data
     func zlRecordFinishRecordVoice(didFinishRecode voiceData: NSData)
@@ -403,10 +404,20 @@ extension ZLRecordView : ZLRecordButtonProtocol{
             zlSliderView.updateLocation(curPoint!.x - self.trackTouchPoint!.x)
         }
        
-        if (firstTouchPoint!.x - trackTouchPoint!.x) > kFloatCancelRecordingOffsetX {
-            senderA.cancelTracking(with: eventA)
-            senderA.removeTarget(nil, action: nil, for: UIControl.Event.allEvents)
-            self.cancled()
+        if (firstTouchPoint!.x - trackTouchPoint!.x) >= kFloatCancelRecordingOffsetX - 5 {
+            
+            isCanceling = true
+            
+            if (firstTouchPoint!.x - trackTouchPoint!.x) >= kFloatCancelRecordingOffsetX{
+                senderA.cancelTracking(with: eventA)
+                senderA.removeTarget(nil, action: nil, for: UIControl.Event.allEvents)
+                self.cancled()
+                print("isCanceling\(isCanceling)")
+            }
+            
+           
+        }else{
+            isCanceling = false
         }
         
         guard timeCount >= 1 else {
@@ -420,7 +431,7 @@ extension ZLRecordView : ZLRecordButtonProtocol{
         }
         
         let changeY = trackTouchPoint!.y - curPoint!.y
-        print(changeY)
+        print("changeY\(changeY)")
         if changeY > 0{
             var originFrame = self.lockView.frame
             originFrame.origin.y -= changeY
@@ -436,6 +447,10 @@ extension ZLRecordView : ZLRecordButtonProtocol{
                 originFrame.size = CGSize.init(width: kFloatLockViewWidth, height: kFloatLockViewWidth)
                 lockView.frame = originFrame;
                 lockView.addBoundsAnimation()
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + (kBoundsAnimationDuration * 3)) {
+                    self.lockView.removeFromSuperview()
+                    self._lockView = nil
+                }
             }
         }else{
             var originFrame = self.lockView.frame
