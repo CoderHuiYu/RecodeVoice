@@ -26,15 +26,14 @@ class ZLLockView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func boundsAnimation() -> CABasicAnimation {
+    func addBoundsAnimation() {
         let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
         scaleAnim.fromValue = 0.8
-        scaleAnim.toValue = 1.3
+        scaleAnim.toValue = 2
         scaleAnim.duration = 0.5
         scaleAnim.autoreverses = true
         scaleAnim.repeatCount = Float.infinity
         self.layer.add(scaleAnim, forKey: "scaleAnim")
-        return scaleAnim
     }
 
 }

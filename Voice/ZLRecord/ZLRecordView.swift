@@ -44,7 +44,7 @@ class ZLRecordView: UIView {
     var _garbageView : ZLGarbageView?
     var _timeLabel : UILabel?
     var _placeholdLabel : UILabel?
-    var _lockView : UIView?
+    var _lockView : ZLLockView?
     var _cancleBitton : UIButton?
     
     
@@ -124,7 +124,7 @@ class ZLRecordView: UIView {
         return _timeLabel!
     }
     
-    var lockView : UIView{
+    var lockView : ZLLockView{
         if _lockView == nil {
             _lockView = ZLLockView.init(frame: CGRect.init(x: self.frame.size.width-kFloatLockViewWidth, y: 0, width: kFloatLockViewWidth, height: kFloatLockViewHeight))
             _lockView!.backgroundColor = UIColor.white
@@ -426,7 +426,7 @@ extension ZLRecordView : ZLRecordButtonProtocol{
             originFrame.origin.y -= changeY
             originFrame.size.height -= changeY
             if originFrame.size.height > kFloatLockViewWidth + 5 {
-                self.lockView.frame = originFrame;
+                lockView.frame = originFrame;
                
             }else {
                 //lock animation
@@ -434,7 +434,8 @@ extension ZLRecordView : ZLRecordButtonProtocol{
                 shimmerView.isShimmering = false
                 zlSliderView.changeStatus()
                 originFrame.size = CGSize.init(width: kFloatLockViewWidth, height: kFloatLockViewWidth)
-                self.lockView.frame = originFrame;
+                lockView.frame = originFrame;
+                lockView.addBoundsAnimation()
             }
         }else{
             var originFrame = self.lockView.frame
