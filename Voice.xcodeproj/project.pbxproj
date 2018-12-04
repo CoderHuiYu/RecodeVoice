@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C269A5521B5405E00F567A8 /* ZLLockAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C269A5421B5405E00F567A8 /* ZLLockAnimationView.swift */; };
+		0C288EEE21B62786007F1F27 /* ZLRaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C288EED21B62786007F1F27 /* ZLRaderView.swift */; };
+		0C288EF021B6434E007F1F27 /* ZLLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C288EEF21B6434E007F1F27 /* ZLLockView.swift */; };
 		0CEDD06C21B106E500F9050E /* ZLRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */; };
 		0CEDD07521B122AA00F9050E /* ZLRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07421B122AA00F9050E /* ZLRecordView.swift */; };
 		0CEDD07721B1317100F9050E /* ZLSlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEDD07621B1317100F9050E /* ZLSlideView.swift */; };
@@ -23,6 +26,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C269A5421B5405E00F567A8 /* ZLLockAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLLockAnimationView.swift; sourceTree = "<group>"; };
+		0C288EED21B62786007F1F27 /* ZLRaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLRaderView.swift; sourceTree = "<group>"; };
+		0C288EEF21B6434E007F1F27 /* ZLLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLLockView.swift; sourceTree = "<group>"; };
 		0CEDD06B21B106E500F9050E /* ZLRecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLRecordButton.swift; sourceTree = "<group>"; };
 		0CEDD07421B122AA00F9050E /* ZLRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLRecordView.swift; sourceTree = "<group>"; };
 		0CEDD07621B1317100F9050E /* ZLSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLSlideView.swift; sourceTree = "<group>"; };
@@ -69,6 +75,9 @@
 				0CEDD07421B122AA00F9050E /* ZLRecordView.swift */,
 				0CEDD07621B1317100F9050E /* ZLSlideView.swift */,
 				0CEDD08221B1463400F9050E /* ZLGarbageView.swift */,
+				0C269A5421B5405E00F567A8 /* ZLLockAnimationView.swift */,
+				0C288EED21B62786007F1F27 /* ZLRaderView.swift */,
+				0C288EEF21B6434E007F1F27 /* ZLLockView.swift */,
 			);
 			path = ZLRecord;
 			sourceTree = "<group>";
@@ -179,8 +188,11 @@
 				0CEDD07E21B144B300F9050E /* ShimmeringLayer.swift in Sources */,
 				0CEDD07D21B144B300F9050E /* ShimmeringView.swift in Sources */,
 				0CEDD07521B122AA00F9050E /* ZLRecordView.swift in Sources */,
+				0C288EF021B6434E007F1F27 /* ZLLockView.swift in Sources */,
+				0C269A5521B5405E00F567A8 /* ZLLockAnimationView.swift in Sources */,
 				0CEDD06C21B106E500F9050E /* ZLRecordButton.swift in Sources */,
 				0CEDD08021B144B300F9050E /* ShimmeringMaskLayer.swift in Sources */,
+				0C288EEE21B62786007F1F27 /* ZLRaderView.swift in Sources */,
 				0CEDD08321B1463400F9050E /* ZLGarbageView.swift in Sources */,
 				0CEDD07F21B144B300F9050E /* Shimmer.swift in Sources */,
 				FED6DFF421AD22C300F8943F /* AppDelegate.swift in Sources */,

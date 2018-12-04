@@ -13,7 +13,18 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
     
     fileprivate var player: AVAudioPlayer?
     var voiceData: NSData?
-
+    lazy var lockView : ZLLockAnimationView = {
+        let l = ZLLockAnimationView.init(frame: CGRect.init(x: 0, y: 100, width: 400, height: 100))
+//        l.backgroundColor = UIColor.red
+        return l
+    }()
+    
+    lazy var raderView : ZLRaderView = {
+        let l = ZLRaderView.init(frame: CGRect.init(x: 200, y: 200, width: 50, height: 50))
+        return l
+        
+    }()
+    
     lazy var playBtn: UIButton = {
         let playBtn = UIButton()
         playBtn.setTitle("play", for: .normal)
@@ -27,15 +38,18 @@ class ViewController: UIViewController ,AVAudioRecorderDelegate{
     }()
     
     lazy var recordView: ZLRecordView = {
-        let recordView = ZLRecordView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height - 50, width: UIScreen.main.bounds.size.width, height: 50))
+        let recordView = ZLRecordView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height - 50-30, width: UIScreen.main.bounds.size.width, height: 50))
         recordView.delegate = self
         return recordView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.init(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1)
         view.addSubview(playBtn)
         view.addSubview(recordView)
+//        view.addSubview(lockView)
+        view.addSubview(raderView)
     }
     
     @objc func playBtnClick(_ sender: UIButton?){

@@ -7,8 +7,12 @@
 //
 
 import UIKit
-
+protocol ZLSlideViewProtocol: NSObjectProtocol{
+    func cancelRecordVoice()
+}
 class ZLSlideView: UIView {
+    
+    weak var delegate : ZLSlideViewProtocol?
     
     lazy var showLabel : UILabel = {
         let label = UILabel.init(frame: self.bounds)
@@ -63,4 +67,34 @@ class ZLSlideView: UIView {
         arrowImageView.frame = imgViewFrame
     }
     
+    func changeStatus() {
+        showLabel.text = "取消"
+        showLabel.isUserInteractionEnabled = true
+        showLabel.textColor = UIColor.blue
+        arrowImageView.isHidden = true
+        
+        let tap : UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action:#selector(canelRecord))
+        showLabel.addGestureRecognizer(tap)
+    }
+    
+    @objc func canelRecord() {
+        guard let delegate = delegate else {return}
+        delegate.cancelRecordVoice()
+    }
+}
+
+extension UIImage{
+    
+    /// 更改图片颜色
+    public func imageWithTintColor(color : UIColor) -> UIImage{
+        UIGraphicsBeginImageContext(self.size)
+        color.setFill()
+        let bounds = CGRect.init(x: 0, y: 0, width: self.size.width, height: self.size.height)
+        UIRectFill(bounds)
+        self.draw(in: bounds, blendMode: CGBlendMode.destinationIn, alpha: 1.0)
+        
+        let tintedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return tintedImage!
+    }
 }
